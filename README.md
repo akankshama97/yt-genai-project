@@ -26,5 +26,26 @@ An AI-powered interview preparation platform that helps candidates prepare for j
 
 ## ⚙️ Installation & Setup
 1. **Clone the repository:**
-   git clone [https://github.com/akankshama97/yt-genai-project.git](https://github.com/akankshama97/yt-genai-project.git)
+   ```bash
+   git clone https://github.com/akankshama97/yt-genai-project.git
    cd yt-genai-project
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   cd Backend
+   npm install
+   npm run dev
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd Fronted
+   npm install
+   npm run dev
+   ```
+
+4. **Or run from root:**
+   - Frontend: `npm run dev` or `npm run dev:frontend`
+   - Backend: `npm run dev:backend`
+

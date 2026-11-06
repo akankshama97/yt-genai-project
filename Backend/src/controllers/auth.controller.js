@@ -93,31 +93,50 @@ async function registerUserController(req,res){
  */
 
 async function logoutUserController(req, res){
-    const token = req.cookies?.token||req.header?.authorization?.split(' ')[1]||req.body?.token;
-    if(!token){
-        return res.status(401).json({message: "No token provided, authorization denied"});
-        await tokenBlacklistModel.create({token})
-}
-res.clearCookie("token")
-res.status(200).json({
-    message: "User logged out succesfully"
-})
+    try {
+        const token = req.cookies?.token || req.headers?.authorization?.split(' ')[1] || req.body?.token;
+        if(!token){
+            return res.status(401).json({message: "No token provided, authorization denied"});
+        }
+        await tokenBlacklistModel.create({ token });
+        res.clearCookie("token");
+        return res.status(200).json({
+            message: "User logged out successfully"
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: "Error logging out",
+            error: err.message
+        });
+    }
 }
 /**
  * @name getMeController
- * @description get the the current logged in user details.
- * @acces private
+ * @description get the current logged in user details.
+ * @access private
  */
 async function getMeController(req, res){
-   const user = await userModel.findById(req.user.id)
-   res.status(200).json({
-    message: "User details fetched succesfully",
-    user:{
-       id: user._id,
-       username: user.username,
-       email:user.email
+    try {
+        const user = await userModel.findById(req.user.id);
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        return res.status(200).json({
+            message: "User details fetched successfully",
+            user:{
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: "Unable to fetch user details",
+            error: err.message
+        });
     }
-   })
 }
 module.exports = {
     registerUserController,

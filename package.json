@@ -1,0 +1,12 @@
+{
+  "name": "yt-gemini-project",
+  "version": "1.0.0",
+  "description": "AI Interview Coach",
+  "scripts": {
+    "dev": "npm run dev --prefix Fronted",
+    "dev:frontend": "npm run dev --prefix Fronted",
+    "dev:backend": "npm run dev --prefix Backend",
+    "start:backend": "node Backend/server.js",
+    "build": "npm run build --prefix Fronted"
+  }
+}

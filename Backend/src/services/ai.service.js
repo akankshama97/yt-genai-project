@@ -2,6 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 const { z } = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
 const puppeteer = require("puppeteer");
+const fs = require("fs");
 
 
 const GOOGLE_API_KEY =
@@ -11,7 +12,7 @@ const GOOGLE_API_KEY =
 
 const GEMINI_MODEL =
     process.env.GEMINI_MODEL ||
-    "gemini-3.6-flash";
+    "gemini-flash-lite-latest";
 
 const ai = GOOGLE_API_KEY
     ? new GoogleGenAI({
@@ -781,15 +782,22 @@ function escapeHtml(value) {
 async function generatePdfFromHtml(
     htmlContent
 ) {
-    const browser =
-        await puppeteer.launch({
-            headless: true,
-            executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-            ],
-        });
+    const launchOptions = {
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+        ],
+    };
+
+    const defaultChromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    } else if (fs.existsSync(defaultChromePath)) {
+        launchOptions.executablePath = defaultChromePath;
+    }
+
+    const browser = await puppeteer.launch(launchOptions);
 
     try {
         const page =

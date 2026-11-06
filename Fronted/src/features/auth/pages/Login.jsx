@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import "../auth.form.scss";
 import { useAuth } from '../hooks/useAuth';
@@ -9,11 +9,21 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleLogin({ email, password });
-        navigate('/'); // Fixed typo: nevigate -> navigate
+        setError("");
+        if (!email.trim() || !password.trim()) {
+            setError("Please enter both email and password.");
+            return;
+        }
+        try {
+            await handleLogin({ email, password });
+            navigate('/');
+        } catch (err) {
+            setError(err?.response?.data?.message || err?.message || "Invalid email or password.");
+        }
     };
 
     if (loading) {
@@ -28,6 +38,7 @@ const Login = () => {
         <main>
             <div className="form-container">
                 <h1>Login</h1>
+                {error && <p className="error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <label htmlFor="email">Email</label>

@@ -1,10 +1,8 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../auth.context";
-import axios from "axios";
 import { login, register, logout, getMe } from "../services/auth.api";
 
 export const useAuth = () => {
-    // 1. Fixed typo: setLoding -> setLoading
     const context = useContext(AuthContext);
     const { user, setUser, loading, setLoading } = context; 
 
@@ -13,8 +11,10 @@ export const useAuth = () => {
         try {
             const data = await login({ email, password });
             setUser(data.user);
+            return data;
         } catch (err) {
-            console.error(err);
+            console.error("Login error:", err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -25,8 +25,10 @@ export const useAuth = () => {
         try {
             const data = await register({ username, email, password });
             setUser(data.user);
+            return data;
         } catch (err) {
-            console.error(err);
+            console.error("Register error:", err);
+            throw err;
         } finally {
             setLoading(false);
         }
@@ -38,26 +40,38 @@ export const useAuth = () => {
             await logout();
             setUser(null);
         } catch (err) {
-            console.error(err);
+            console.error("Logout error:", err);
+            throw err;
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
+        let isMounted = true;
         const getAndSetUser = async () => {
             try {
                 const data = await getMe();
-                setUser(data.user);
-            } catch (err) {
-                setUser(null);
+                if (isMounted) {
+                    setUser(data.user);
+                }
+            } catch {
+                if (isMounted) {
+                    setUser(null);
+                }
             } finally {
-                setLoading(false); // Ye ab bina kisi error ke loading ko stop kar dega!
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         getAndSetUser();
-    }, []);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [setUser, setLoading]);
 
     return { user, setUser, loading, handleRegister, handleLogin, handleLogout };
 };
