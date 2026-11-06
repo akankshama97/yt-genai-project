@@ -1,6 +1,7 @@
 {
   "framework": "vite",
-  "buildCommand": "npm run build --prefix Fronted",
+  "installCommand": "cd Fronted && npm install",
+  "buildCommand": "cd Fronted && npm run build",
   "outputDirectory": "Fronted/dist",
   "rewrites": [
     {
