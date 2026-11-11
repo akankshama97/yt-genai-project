@@ -1,9 +1,17 @@
 {
-  "framework": "vite",
-  "installCommand": "cd Fronted && npm install",
-  "buildCommand": "cd Fronted && npm run build",
+  "version": 2,
+  "buildCommand": "cd Fronted && npm install && npm run build",
   "outputDirectory": "Fronted/dist",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

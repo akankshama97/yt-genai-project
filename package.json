@@ -8,5 +8,19 @@
     "dev:backend": "npm run dev --prefix Backend",
     "start:backend": "node Backend/server.js",
     "build": "cd Fronted && npm install && npm run build"
+  },
+  "dependencies": {
+    "@google/genai": "^1.42.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1",
+    "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.25.1"
   }
 }

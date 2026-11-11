@@ -1,7 +1,12 @@
 const { GoogleGenAI } = require("@google/genai");
 const { z } = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
-const puppeteer = require("puppeteer");
+let puppeteer = null;
+try {
+    puppeteer = require("puppeteer");
+} catch {
+    puppeteer = null;
+}
 const fs = require("fs");
 
 
@@ -782,6 +787,12 @@ function escapeHtml(value) {
 async function generatePdfFromHtml(
     htmlContent
 ) {
+    if (!puppeteer) {
+        throw new Error(
+            "PDF export via Puppeteer is not supported in this serverless environment."
+        );
+    }
+
     const launchOptions = {
         headless: true,
         args: [
