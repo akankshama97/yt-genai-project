@@ -19,18 +19,15 @@ const Home = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
-
         if (error) setError("");
     };
 
     const handleResumeChange = (e) => {
         const file = e.target.files?.[0];
-
         if (!file) return;
 
         const allowedTypes = [
@@ -61,7 +58,6 @@ const Home = () => {
 
     const handleRemoveResume = () => {
         setResume(null);
-
         if (resumeInputRef.current) {
             resumeInputRef.current.value = "";
         }
@@ -90,7 +86,7 @@ const Home = () => {
         }
 
         if (selfDescription.length < 20) {
-            setError("About You should contain at least 20 characters.");
+            setError("About you should contain at least 20 characters.");
             return;
         }
 
@@ -102,15 +98,12 @@ const Home = () => {
             });
 
             if (data?.interviewReport?._id) {
-            navigate(`/interviews/${data.interviewReport._id}`
-                
-            );
+                navigate(`/interviews/${data.interviewReport._id}`);
             } else {
                 setError("Unable to create interview. Please try again.");
             }
         } catch (err) {
             console.error(err);
-
             setError(
                 err?.response?.data?.message ||
                 err?.message ||
@@ -120,362 +113,144 @@ const Home = () => {
     };
 
     return (
-        <main className="home-page">
+        <main className="prep-page">
+            <div className="prep-container">
+                <div className="prep-grid">
+                    {/* LEFT COLUMN: INTRO & SAMPLE QUESTION */}
+                    <div className="prep-sidebar">
+                        <span className="prep-label">Interview Prep</span>
+                        <h1 className="prep-heading">
+                            Practice for the role you <span className="prep-accent">actually want</span>.
+                        </h1>
+                        <p className="prep-intro">
+                            Add the job requirements and your background to work through realistic technical and team questions.
+                        </p>
 
-            {/* HERO */}
-            <section className="hero-section">
-
-                <div className="hero-content">
-
-                    <div className="hero-badge">
-                        <span>✦</span>
-                        AI-Powered Interview Preparation
-                    </div>
-
-                    <h1>
-                        Crack Your Next
-                        <span> Interview With AI</span>
-                    </h1>
-
-                    <p className="hero-description">
-                        Get personalized interview questions based on your
-                        job description, resume and experience.
-                    </p>
-
-                    <div className="hero-features">
-                        <div>
-                            <span>✓</span>
-                            AI Generated Questions
-                        </div>
-
-                        <div>
-                            <span>✓</span>
-                            Resume Based Analysis
-                        </div>
-
-                        <div>
-                            <span>✓</span>
-                            Personalized Interview
-                        </div>
-                    </div>
-
-                    <div className="ai-coach-card">
-
-                        <div className="coach-icon">
-                            ✨
-                        </div>
-
-                        <div>
-                            <h3>AI Interview Coach</h3>
-
-                            <p>
-                                Let's prepare you for your dream job.
+                        <div className="sample-card">
+                            <span className="sample-kicker">Sample interview question</span>
+                            <p className="sample-quote">
+                                "Tell me about a time when the project requirements changed midway through. How did you handle scope and timelines?"
                             </p>
-
-                            <div className="ai-status">
-                                <span></span>
-                                AI is ready
+                            <div className="sample-hint">
+                                <span className="sample-hint-title">What a good answer includes:</span>
+                                <p className="sample-hint-text">
+                                    How you communicated early with stakeholders, the specific trade-offs evaluated between scope and delivery, and the measurable outcome achieved.
+                                </p>
                             </div>
                         </div>
-
                     </div>
 
-                </div>
-
-                <div className="hero-visual">
-
-                    <div className="visual-glow"></div>
-
-                    <div className="visual-card">
-
-                        <div className="visual-top">
-                            <span>AI ANALYSIS</span>
-
-                            <span className="live-dot">
-                                ● LIVE
-                            </span>
-                        </div>
-
-                        <div className="score-circle">
-                            <strong>87%</strong>
-                            <span>Match Score</span>
-                        </div>
-
-                        <div className="score-bars">
-
-                            <div>
-                                <span>Skills</span>
-                                <div className="bar">
-                                    <i style={{ width: "90%" }}></i>
+                    {/* RIGHT COLUMN: THE FORM */}
+                    <div className="prep-form-wrapper">
+                        <form className="prep-form" onSubmit={handleSubmit}>
+                            {/* STEP 1: JOB DESCRIPTION */}
+                            <div className="form-step">
+                                <div className="step-header">
+                                    <label htmlFor="jobDescription" className="step-label">
+                                        1. Job description
+                                    </label>
+                                    <span className="step-status">Required</span>
                                 </div>
-                            </div>
-
-                            <div>
-                                <span>Experience</span>
-                                <div className="bar">
-                                    <i style={{ width: "78%" }}></i>
-                                </div>
-                            </div>
-
-                            <div>
-                                <span>Role Match</span>
-                                <div className="bar">
-                                    <i style={{ width: "86%" }}></i>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            {/* FORM */}
-            <section className="interview-section">
-
-                <div className="section-heading">
-
-                    <span className="section-number">
-                        01 — GET STARTED
-                    </span>
-
-                    <h2>
-                        Tell us about your
-                        <span> interview</span>
-                    </h2>
-
-                    <p>
-                        Provide some details and our AI will create a
-                        personalized interview for you.
-                    </p>
-
-                </div>
-
-
-                <form
-                    className="interview-form"
-                    onSubmit={handleSubmit}
-                >
-
-                    {/* JOB DESCRIPTION */}
-                    <div className="input-group">
-
-                        <div className="label-wrapper">
-
-                            <div>
-                                <label htmlFor="jobDescription">
-                                    Job Description
-                                </label>
-
-                                <span className="required-badge">
-                                    Required
-                                </span>
-                            </div>
-
-                            <span className="character-count">
-                                {formData.jobDescription.length} chars
-                            </span>
-
-                        </div>
-
-                        <textarea
-                            id="jobDescription"
-                            name="jobDescription"
-                            rows={7}
-                            placeholder="Example: We are looking for a React Developer with experience in JavaScript, React, Node.js and REST APIs..."
-                            value={formData.jobDescription}
-                            onChange={handleChange}
-                            disabled={loading}
-                        />
-
-                        <small>
-                            Paste the job description you're preparing for.
-                        </small>
-
-                    </div>
-
-
-                    {/* RESUME */}
-                    <div className="input-group">
-
-                        <div className="label-wrapper">
-
-                            <div>
-                                <label>
-                                    Resume
-                                </label>
-
-                                <span className="optional-badge">
-                                    Optional
-                                </span>
-                            </div>
-
-                        </div>
-
-                        {!resume ? (
-
-                            <label
-                                htmlFor="resume"
-                                className="upload-box"
-                            >
-
-                                <div className="upload-icon">
-                                    ↑
-                                </div>
-
-                                <div className="upload-content">
-
-                                    <strong>
-                                        Upload your resume
-                                    </strong>
-
-                                    <p>
-                                        PDF
-                                        <span> • </span>
-                                        Max 3 MB
-                                    </p>
-
-                                </div>
-
-                                <div className="upload-arrow">
-                                    →
-                                </div>
-
-                            </label>
-
-                        ) : (
-
-                            <div className="selected-file">
-
-                                <div className="file-icon">
-                                    PDF
-                                </div>
-
-                                <div className="file-details">
-
-                                    <strong>
-                                        {resume.name}
-                                    </strong>
-
-                                    <span>
-                                        {(resume.size / 1024 / 1024).toFixed(2)} MB
-                                    </span>
-
-                                </div>
-
-                                <button
-                                    type="button"
-                                    className="remove-file"
-                                    onClick={handleRemoveResume}
+                                <textarea
+                                    id="jobDescription"
+                                    name="jobDescription"
+                                    rows={6}
+                                    placeholder="Paste the role requirements, responsibilities, and qualifications..."
+                                    value={formData.jobDescription}
+                                    onChange={handleChange}
                                     disabled={loading}
-                                >
-                                    ×
-                                </button>
-
+                                />
+                                <p className="step-helper">
+                                    Paste the job description you are preparing for.
+                                </p>
                             </div>
 
-                        )}
+                            {/* STEP 2: RESUME (OPTIONAL) */}
+                            <div className="form-step">
+                                <div className="step-header">
+                                    <label className="step-label">
+                                        2. Resume
+                                    </label>
+                                    <span className="step-status">Optional</span>
+                                </div>
 
-                        <input
-                            ref={resumeInputRef}
-                            id="resume"
-                            type="file"
-                            hidden
-                            accept=".pdf"
-                            onChange={handleResumeChange}
-                            disabled={loading}
-                        />
+                                {!resume ? (
+                                    <label htmlFor="resume" className="upload-box">
+                                        <span className="upload-title">Click to upload your resume</span>
+                                        <span className="upload-note">PDF only, maximum 3 MB</span>
+                                    </label>
+                                ) : (
+                                    <div className="uploaded-file">
+                                        <div className="file-info">
+                                            <span className="file-name">{resume.name}</span>
+                                            <span className="file-size">{(resume.size / 1024 / 1024).toFixed(2)} MB</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="remove-btn"
+                                            onClick={handleRemoveResume}
+                                            disabled={loading}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                )}
 
-                        <small>
-                            Uploading your resume helps AI create more
-                            relevant questions.
-                        </small>
-
-                    </div>
-
-
-                    {/* ABOUT YOU */}
-                    <div className="input-group">
-
-                        <div className="label-wrapper">
-
-                            <div>
-                                <label htmlFor="selfDescription">
-                                    About You
-                                </label>
-
-                                <span className="required-badge">
-                                    Required
-                                </span>
+                                <input
+                                    ref={resumeInputRef}
+                                    id="resume"
+                                    type="file"
+                                    hidden
+                                    accept=".pdf"
+                                    onChange={handleResumeChange}
+                                    disabled={loading}
+                                />
+                                <p className="step-helper">
+                                    Upload your resume so the questions match your actual background.
+                                </p>
                             </div>
 
-                            <span className="character-count">
-                                {formData.selfDescription.length} chars
-                            </span>
+                            {/* STEP 3: ABOUT YOU */}
+                            <div className="form-step">
+                                <div className="step-header">
+                                    <label htmlFor="selfDescription" className="step-label">
+                                        3. About you
+                                    </label>
+                                    <span className="step-status">Required</span>
+                                </div>
+                                <textarea
+                                    id="selfDescription"
+                                    name="selfDescription"
+                                    rows={6}
+                                    placeholder="Summarize your core skills, recent projects, and work experience..."
+                                    value={formData.selfDescription}
+                                    onChange={handleChange}
+                                    disabled={loading}
+                                />
+                                <p className="step-helper">
+                                    Tell us about your experience level and the technologies you use.
+                                </p>
+                            </div>
 
-                        </div>
+                            {/* ERROR MESSAGE */}
+                            {error && (
+                                <div className="form-error-box">
+                                    {error}
+                                </div>
+                            )}
 
-                        <textarea
-                            id="selfDescription"
-                            name="selfDescription"
-                            rows={7}
-                            placeholder="Tell us about your skills, projects, experience, strengths and technologies you know..."
-                            value={formData.selfDescription}
-                            onChange={handleChange}
-                            disabled={loading}
-                        />
-
-                        <small>
-                            This helps AI understand your experience level.
-                        </small>
-
+                            {/* PRIMARY SUBMIT BUTTON */}
+                            <button
+                                type="submit"
+                                className="primary-submit-btn"
+                                disabled={loading}
+                            >
+                                {loading ? "Preparing your practice interview..." : "Start my practice interview"}
+                            </button>
+                        </form>
                     </div>
-
-
-                    {/* ERROR */}
-                    {error && (
-                        <div className="form-error">
-                            <span>!</span>
-                            {error}
-                        </div>
-                    )}
-
-
-                    {/* BUTTON */}
-                    <button
-                        type="submit"
-                        className="generate-button"
-                        disabled={loading}
-                    >
-
-                        {loading ? (
-                            <>
-                                <span className="loader"></span>
-                                Creating Your Interview...
-                            </>
-                        ) : (
-                            <>
-                                Generate My Interview
-                                <span>→</span>
-                            </>
-                        )}
-
-                    </button>
-
-
-                    <div className="privacy-note">
-                        <span>🔒</span>
-                        Your information is used only to personalize
-                        your interview experience.
-                    </div>
-
-                </form>
-
-            </section>
-
+                </div>
+            </div>
         </main>
     );
 };
