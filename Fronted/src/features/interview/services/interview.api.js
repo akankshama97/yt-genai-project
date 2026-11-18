@@ -1,108 +1,57 @@
-import axios from "axios";
-
-const getBaseUrl = () => {
-    const envUrl = import.meta.env.VITE_API_URL;
-    if (envUrl && envUrl.trim()) {
-        return envUrl.trim().replace(/\/$/, "");
-    }
-    if (import.meta.env.DEV) {
-        return "http://localhost:3000";
-    }
-    return "https://yt-genai-project.onrender.com";
-};
-
-const api = axios.create({
-    baseURL: getBaseUrl(),
-    withCredentials: true,
-});
-
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+import api from "../../../services/apiClient";
 
 export const generateInterviewReport = async ({
-    jobDescription,
-    selfDescription,
-    resumeFile,
+  jobDescription,
+  selfDescription,
+  resumeFile,
 }) => {
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append(
-        "jobDescription",
-        jobDescription
-    );
+  formData.append("jobDescription", jobDescription);
+  formData.append("selfDescription", selfDescription);
 
-    formData.append(
-        "selfDescription",
-        selfDescription
-    );
+  if (resumeFile) {
+    formData.append("resume", resumeFile);
+  }
 
-    // Resume OPTIONAL
-    if (resumeFile) {
-        formData.append(
-            "resume",
-            resumeFile
-        );
-    }
-
-    const response = await api.post(
-        "/api/interview/",
-        formData
-    );
-
-    return response.data;
+  const response = await api.post("/api/interview/", formData);
+  return response.data;
 };
 
-export const getInterviewReportById = async (
-    interviewId
-) => {
-    const response = await api.get(
-        `/api/interview/report/${interviewId}`
-    );
-
-    return response.data;
+export const getInterviewReportById = async (interviewId) => {
+  const response = await api.get(`/api/interview/report/${interviewId}`);
+  return response.data;
 };
 
 export const getAllInterviewReports = async () => {
-    const response = await api.get(
-        "/api/interview/"
-    );
-
-    return response.data;
+  const response = await api.get("/api/interview/");
+  return response.data;
 };
 
-export const generateResumePdf = async ({
-    interviewReportId,
-}) => {
-    const response = await api.post(
-        `/api/interview/resume/pdf/${interviewReportId}`,
-        null,
-        {
-            responseType: "blob",
-        }
-    );
-
-    return response.data;
+export const generateResumePdf = async ({ interviewReportId }) => {
+  const response = await api.post(
+    `/api/interview/resume/pdf/${interviewReportId}`,
+    null,
+    {
+      responseType: "blob",
+    }
+  );
+  return response.data;
 };
 
 export const evaluateQuestionAnswer = async ({
+  question,
+  answer,
+  intention,
+  modelAnswer,
+  role,
+}) => {
+  const response = await api.post("/api/interview/feedback", {
     question,
     answer,
     intention,
     modelAnswer,
     role,
-}) => {
-    const response = await api.post("/api/interview/feedback", {
-        question,
-        answer,
-        intention,
-        modelAnswer,
-        role,
-    });
-
-    return response.data;
+  });
+  return response.data;
 };
