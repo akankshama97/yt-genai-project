@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import Button from "./Button";
 
 const FileUpload = ({
   id = "resume",
-  label = "2. Resume",
+  label = "Resume",
   statusText = "Optional",
-  helperText = "Upload your resume so questions and analysis match your actual background.",
+  helperText,
   error,
   file,
   onFileSelect,
@@ -13,6 +13,7 @@ const FileUpload = ({
   accept = ".pdf",
   disabled = false,
   className = "",
+  hideHeader = false,
 }) => {
   const inputRef = useRef(null);
 
@@ -23,7 +24,8 @@ const FileUpload = ({
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = (e) => {
+    e.stopPropagation();
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -39,7 +41,7 @@ const FileUpload = ({
 
   return (
     <div className={`file-upload ${className}`}>
-      {(label || statusText) && (
+      {!hideHeader && (label || statusText) && (
         <div className="form-field__header">
           {label && <label className="form-field__label">{label}</label>}
           {statusText && (
@@ -71,6 +73,22 @@ const FileUpload = ({
           }}
         >
           <span className="file-upload__title">Click to upload your resume</span>
+          <div className="file-upload__cloud-icon-wrap" aria-hidden="true">
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#6495ED"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+          </div>
           <span className="file-upload__subtext">PDF only, maximum 3 MB</span>
         </label>
       ) : (

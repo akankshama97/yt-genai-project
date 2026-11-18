@@ -1,155 +1,312 @@
 /* ==========================================================================
-   Input / Home Page CSS
-   Strictly references design tokens; no hardcoded hex/rgb colors.
+   Dashboard / Home Page CSS
+   Ultra-clean minimalist UI with generous whitespace and #6495ED theme
    ========================================================================== */
 
+/* ── Two-Column Grid Layout ─────────────────────────────────────────────── */
 .home-grid {
   display: grid;
-  grid-template-columns: 2fr 3fr; /* 40 / 60 ratio on desktop */
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); /* ~44% / 56% desktop split */
+  gap: 56px;
   align-items: start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 0 64px;
 }
 
-/* ── Left Column ────────────────────────────────────────────────────────── */
+/* ── Left Column: Spacious Hero & Minimal Sample Question ────────────────── */
 .home-intro {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px; /* space-y-8 */
 }
 
 .home-intro__header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.home-intro__label {
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--primary);
-}
-
-.home-intro__title {
-  font-size: 36px;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-
-.home-intro__subtext {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-/* Sample Card */
-.sample-card {
-  display: flex;
-  flex-direction: column;
   gap: 16px;
 }
 
-.sample-card__kicker {
-  font-size: 12px;
-  font-weight: 600;
+/* Eyebrow Pill: Soft #6495ED/15 pill badge */
+.home-intro__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background-color: rgba(100, 149, 237, 0.15);
+  color: #6495ED;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  align-self: flex-start;
+  user-select: none;
+}
+
+/* Heading: text-4xl font-semibold tracking-tight text-slate-900 */
+.home-intro__title {
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: #0F172A;
+  margin: 0;
+}
+
+/* Subtitle: text-slate-500 leading-relaxed */
+.home-intro__subtext {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #64748B;
+  margin: 0;
+}
+
+/* Sample Question Card: bg-white rounded-2xl border border-slate-200/80 shadow-sm p-7 */
+.sample-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px; /* rounded-2xl */
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  padding: 28px; /* p-7 */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sample-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748B;
+}
+
+.sample-card__icon {
+  color: #6495ED;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sample-card__kicker {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748B;
 }
 
 .sample-card__quote {
   font-size: 15px;
   font-weight: 500;
-  line-height: 1.5;
-  color: var(--text);
+  line-height: 1.6;
+  color: #0F172A;
+  margin: 0;
 }
 
 .sample-card__hint {
+  border-top: 1px solid #F1F5F9;
+  padding-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
+  gap: 4px;
 }
 
 .sample-card__hint-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: #64748B;
 }
 
 .sample-card__hint-text {
   font-size: 13px;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: #64748B;
+  margin: 0;
 }
 
-/* How It Works */
-.how-it-works {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* ── Right Column: Minimalist Vertical Stepper Form Card ─────────────────── */
+.home-stepper-card {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px; /* rounded-2xl */
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 10px 24px -4px rgba(15, 23, 42, 0.06); /* shadow-md */
+  padding: 32px; /* p-8 */
 }
 
-.how-it-works__title {
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-
-.how-it-works__list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.how-it-works__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.how-it-works__num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-sm);
-  background-color: var(--surface-muted);
-  border: 1px solid var(--border);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.how-it-works__text {
-  font-size: 14px;
-  color: var(--text);
-  line-height: 1.4;
-}
-
-/* ── Right Column: Form ─────────────────────────────────────────────────── */
 .home-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px; /* space-y-7 */
+}
+
+/* ── Vertical Stepper Timeline Layout ───────────────────────────────────── */
+.stepper-steps-wrapper {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* ── Mobile Layout ──────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
+.stepper-step {
+  display: flex;
+  gap: 18px;
+  position: relative;
+}
+
+.stepper-step__timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px;
+}
+
+/* Step Badges: circular #6495ED step badges (1, 2, 3) containing white numbers */
+.stepper-step__badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #6495ED;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(100, 149, 237, 0.3);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Vertical line connecting steps 1, 2, 3: subtle 1px light-gray line (border-slate-200) */
+.stepper-step__line {
+  width: 1px;
+  background-color: #E2E8F0;
+  flex: 1;
+  margin-top: 8px;
+  margin-bottom: -16px;
+  z-index: 1;
+}
+
+.stepper-step__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.stepper-step__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Bold Label */
+.stepper-step__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.stepper-step__status {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748B;
+}
+
+.stepper-step__status--optional {
+  color: #94A3B8;
+}
+
+.stepper-step__helper {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Clean, spacious rounded textareas: rounded-xl border-slate-200 focus:border-[#6495ED] focus:ring-4 focus:ring-[#6495ED]/15 */
+.stepper-step__textarea {
+  width: 100%;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px; /* rounded-xl */
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 110px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stepper-step__textarea::placeholder {
+  color: #94A3B8;
+}
+
+.stepper-step__textarea:focus {
+  outline: none;
+  border-color: #6495ED;
+  box-shadow: 0 0 0 4px rgba(100, 149, 237, 0.15);
+}
+
+.stepper-step__textarea--error {
+  border-color: var(--danger) !important;
+}
+
+.stepper-step__error-text {
+  font-size: 12px;
+  color: var(--danger);
+  margin: 0;
+}
+
+/* Primary CTA Button: Full-width solid #6495ED button (hover:bg-[#5283E0] text-white font-medium py-3.5 rounded-xl transition-colors) */
+.home-submit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #6495ED !important;
+  border: 1px solid #6495ED !important;
+  color: #FFFFFF !important;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 14px 20px; /* py-3.5 */
+  border-radius: 12px; /* rounded-xl */
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(100, 149, 237, 0.25);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  margin-top: 6px;
+}
+
+.home-submit-btn:hover:not(:disabled) {
+  background-color: #5283E0 !important;
+  border-color: #5283E0 !important;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(100, 149, 237, 0.35);
+}
+
+.home-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Responsive Stack ───────────────────────────────────────────────────── */
+@media (max-width: 960px) {
   .home-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
+    padding: 12px 0 48px;
   }
 
   .home-intro__title {
-    font-size: 28px;
+    font-size: 30px;
+  }
+
+  .home-stepper-card {
+    padding: 24px 20px;
   }
 }

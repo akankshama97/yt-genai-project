@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppLayout from "../../../components/layout/AppLayout";
-import Card from "../../../components/ui/Card";
-import Textarea from "../../../components/ui/Textarea";
 import FileUpload from "../../../components/ui/FileUpload";
 import Button from "../../../components/ui/Button";
 import Alert from "../../../components/ui/Alert";
@@ -144,129 +142,184 @@ const Home = () => {
   return (
     <AppLayout>
       <div className="home-grid">
-        {/* LEFT COLUMN: 40% DESKTOP */}
+        {/* LEFT COLUMN: Spacious Hero & Minimal Sample Question */}
         <section className="home-intro" aria-labelledby="intro-heading">
           <div className="home-intro__header">
-            <span className="home-intro__label">Interview preparation</span>
+            {/* Eyebrow Pill: Soft #6495ED/15 pill badge */}
+            <span className="home-intro__badge">
+              INTERVIEW PREPARATION
+            </span>
+
+            {/* Heading: Large, crisp dark-slate heading */}
             <h1 id="intro-heading" className="home-intro__title">
               Prepare for your next interview
             </h1>
+
+            {/* Subtitle */}
             <p className="home-intro__subtext">
               Paste the job description and share your background. You will get
               role-specific questions and feedback on every answer.
             </p>
           </div>
 
-          {/* Sample Question Card */}
-          <Card className="sample-card">
-            <span className="sample-card__kicker">Sample question</span>
-            <p className="sample-card__quote">
-              "Tell me about a time when the project requirements changed
-              midway through. How did you handle scope and timelines?"
-            </p>
-            <div className="sample-card__hint">
-              <span className="sample-card__hint-title">
-                What a strong answer includes
+          {/* Sample Question Card: Clean white card */}
+          <div className="sample-card">
+            <div className="sample-card__header">
+              <span className="sample-card__icon" aria-hidden="true">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#6495ED"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 2a6 6 0 0 0-6 6c0 2.22 1.2 4.15 3 5.19V17a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3.81c1.8-1.04 3-2.97 3-5.19a6 6 0 0 0-6-6z" />
+                  <line x1="9" y1="21" x2="15" y2="21" />
+                </svg>
               </span>
-              <p className="sample-card__hint-text">
-                How you communicated early with stakeholders, the specific
-                trade-offs evaluated between scope and delivery, and the
-                measurable outcome achieved.
-              </p>
+              <span className="sample-card__kicker">SAMPLE QUESTION</span>
             </div>
-          </Card>
 
-          {/* How It Works */}
-          <div className="how-it-works">
-            <span className="how-it-works__title">How it works</span>
-            <div className="how-it-works__list">
-              <div className="how-it-works__item">
-                <span className="how-it-works__num">1</span>
-                <span className="how-it-works__text">
-                  Paste the job description
-                </span>
-              </div>
-              <div className="how-it-works__item">
-                <span className="how-it-works__num">2</span>
-                <span className="how-it-works__text">
-                  Add your background
-                </span>
-              </div>
-              <div className="how-it-works__item">
-                <span className="how-it-works__num">3</span>
-                <span className="how-it-works__text">
-                  Answer questions and get feedback
-                </span>
-              </div>
+            <p className="sample-card__quote">
+              "Tell me about a time when the project requirements changed midway through. How did you handle scope and timelines?"
+            </p>
+
+            <div className="sample-card__hint">
+              <span className="sample-card__hint-title">What a strong answer includes:</span>
+              <p className="sample-card__hint-text">
+                How you communicated early with stakeholders, evaluated trade-offs between delivery and scope, and maintained engineering quality.
+              </p>
             </div>
           </div>
         </section>
 
-        {/* RIGHT COLUMN: 60% DESKTOP */}
+        {/* RIGHT COLUMN: Minimalist Vertical Stepper Form Card */}
         <section aria-label="Interview configuration form">
-          <Card padding="lg">
+          <div className="home-stepper-card">
             <form className="home-form" onSubmit={handleSubmit} noValidate>
-              {/* Step 1: Job Description */}
-              <Textarea
-                id="jobDescription"
-                name="jobDescription"
-                label="1. Job description"
-                statusText="Required"
-                helperText="Paste the role requirements, responsibilities, and qualifications."
-                placeholder="Paste the role requirements, responsibilities, and qualifications..."
-                value={formData.jobDescription}
-                onChange={handleChange}
-                error={hasSubmitted ? errors.jobDescription : ""}
-                disabled={loading}
-                rows={6}
-              />
+              <div className="stepper-steps-wrapper">
+                {/* Step 1: Job Description */}
+                <div className="stepper-step">
+                  <div className="stepper-step__timeline">
+                    <div className="stepper-step__badge">1</div>
+                    <div className="stepper-step__line" />
+                  </div>
+                  <div className="stepper-step__content">
+                    <div className="stepper-step__header">
+                      <label htmlFor="jobDescription" className="stepper-step__label">
+                        Job description
+                      </label>
+                      <span className="stepper-step__status">Required</span>
+                    </div>
+                    <textarea
+                      id="jobDescription"
+                      name="jobDescription"
+                      rows={5}
+                      placeholder="Paste the role requirements, responsibilities, and qualifications..."
+                      value={formData.jobDescription}
+                      onChange={handleChange}
+                      disabled={loading}
+                      aria-invalid={Boolean(hasSubmitted && errors.jobDescription)}
+                      className={`stepper-step__textarea ${
+                        hasSubmitted && errors.jobDescription
+                          ? "stepper-step__textarea--error"
+                          : ""
+                      }`}
+                    />
+                    {hasSubmitted && errors.jobDescription && (
+                      <p className="stepper-step__error-text" role="alert">
+                        {errors.jobDescription}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-              {/* Step 2: Resume */}
-              <FileUpload
-                id="resume"
-                label="2. Resume"
-                statusText="Optional"
-                helperText="Upload your resume so the questions match your actual background."
-                file={resume}
-                onFileSelect={handleResumeSelect}
-                onFileRemove={handleResumeRemove}
-                error={errors.resume}
-                disabled={loading}
-              />
+                {/* Step 2: About You */}
+                <div className="stepper-step">
+                  <div className="stepper-step__timeline">
+                    <div className="stepper-step__badge">2</div>
+                    <div className="stepper-step__line" />
+                  </div>
+                  <div className="stepper-step__content">
+                    <div className="stepper-step__header">
+                      <label htmlFor="selfDescription" className="stepper-step__label">
+                        About you
+                      </label>
+                      <span className="stepper-step__status">Required</span>
+                    </div>
+                    <textarea
+                      id="selfDescription"
+                      name="selfDescription"
+                      rows={5}
+                      placeholder="Summarize your core skills, recent projects, and work experience..."
+                      value={formData.selfDescription}
+                      onChange={handleChange}
+                      disabled={loading}
+                      aria-invalid={Boolean(hasSubmitted && errors.selfDescription)}
+                      className={`stepper-step__textarea ${
+                        hasSubmitted && errors.selfDescription
+                          ? "stepper-step__textarea--error"
+                          : ""
+                      }`}
+                    />
+                    {hasSubmitted && errors.selfDescription && (
+                      <p className="stepper-step__error-text" role="alert">
+                        {errors.selfDescription}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-              {/* Step 3: About You */}
-              <Textarea
-                id="selfDescription"
-                name="selfDescription"
-                label="3. About you"
-                statusText="Required"
-                helperText="Summarize your core skills, recent projects, and work experience."
-                placeholder="Summarize your core skills, recent projects, and work experience..."
-                value={formData.selfDescription}
-                onChange={handleChange}
-                error={hasSubmitted ? errors.selfDescription : ""}
-                disabled={loading}
-                rows={6}
-              />
+                {/* Step 3: Resume */}
+                <div className="stepper-step">
+                  <div className="stepper-step__timeline">
+                    <div className="stepper-step__badge">3</div>
+                  </div>
+                  <div className="stepper-step__content">
+                    <div className="stepper-step__header">
+                      <label htmlFor="resume" className="stepper-step__label">
+                        Resume
+                      </label>
+                      <span className="stepper-step__status stepper-step__status--optional">
+                        Optional
+                      </span>
+                    </div>
+                    <FileUpload
+                      id="resume"
+                      label=""
+                      statusText=""
+                      hideHeader
+                      file={resume}
+                      onFileSelect={handleResumeSelect}
+                      onFileRemove={handleResumeRemove}
+                      error={errors.resume}
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* General Submission Error */}
               {errors.general && (
                 <Alert variant="danger">{errors.general}</Alert>
               )}
 
-              {/* Primary Button */}
+              {/* Primary CTA Button: Full-width solid #6495ED button */}
               <Button
                 type="submit"
                 variant="primary"
                 fullWidth
-                height44
+                className="home-submit-btn"
                 loading={loading}
                 disabled={loading}
               >
                 {loading ? "Preparing interview questions..." : "Start practice interview"}
               </Button>
             </form>
-          </Card>
+          </div>
         </section>
       </div>
     </AppLayout>

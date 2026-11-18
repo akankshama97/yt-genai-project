@@ -15,6 +15,19 @@ const Navbar = ({ fluid = false }) => {
     }
   };
 
+  const displayName = user?.username || user?.name || "Akanksha Maurya";
+
+  const getInitials = (name) => {
+    if (!name) return "AM";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return parts[0].slice(0, 2).toUpperCase();
+  };
+
+  const initials = getInitials(displayName);
+
   return (
     <header className="navbar" role="banner">
       <div className={`navbar__container ${fluid ? "navbar__container--fluid" : ""}`}>
@@ -29,9 +42,14 @@ const Navbar = ({ fluid = false }) => {
               <Link to="/" className="navbar__link">
                 Practice
               </Link>
-              <span className="navbar__user" title={user.email || user.username}>
-                {user.username || user.email}
-              </span>
+              <div className="navbar__user-profile">
+                <span className="navbar__avatar" aria-hidden="true">
+                  {initials}
+                </span>
+                <span className="navbar__user-name" title={displayName}>
+                  {displayName}
+                </span>
+              </div>
               <Button variant="ghost" size="sm" onClick={onLogout}>
                 Sign out
               </Button>
