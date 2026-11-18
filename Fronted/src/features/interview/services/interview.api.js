@@ -88,3 +88,21 @@ export const generateResumePdf = async ({
 
     return response.data;
 };
+
+export const evaluateQuestionAnswer = async ({
+    question,
+    answer,
+    intention,
+    modelAnswer,
+    role,
+}) => {
+    const response = await api.post("/api/interview/feedback", {
+        question,
+        answer,
+        intention,
+        modelAnswer,
+        role,
+    });
+
+    return response.data;
+};

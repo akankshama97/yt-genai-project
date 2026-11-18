@@ -1,94 +1,117 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import "../auth.form.scss";
-import { useAuth } from '../hooks/useAuth';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import AppLayout from "../../../components/layout/AppLayout";
+import Card from "../../../components/ui/Card";
+import Input from "../../../components/ui/Input";
+import Button from "../../../components/ui/Button";
+import Alert from "../../../components/ui/Alert";
+import { useAuth } from "../hooks/useAuth";
+import "../../../styles/auth.css";
 
 const Register = () => {
-    const { loading, handleRegister } = useAuth();
-    const navigate = useNavigate();
+  const { loading, handleRegister } = useAuth();
+  const navigate = useNavigate();
 
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [submitting, setSubmitting] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        if (!username.trim() || !email.trim() || !password.trim()) {
-            setError("Please fill in all fields.");
-            return;
-        }
-        setSubmitting(true);
-        try {
-            await handleRegister({ username, email, password });
-            navigate('/');
-        } catch (err) {
-            setError(err?.response?.data?.message || err?.message || "Failed to register. Please try again.");
-        } finally {
-            setSubmitting(false);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-    if (loading) {
-        return (
-            <main>
-                <h1>Loading...</h1>
-            </main>
-        );
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      setError("Please fill in all fields.");
+      return;
     }
 
-    return (
-        <main>
-            <div className="form-container">
-                <h1>Register</h1>
-                {error && <p className="error-message" style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
+    setSubmitting(true);
+    try {
+      await handleRegister({ username, email, password });
+      navigate("/");
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to register. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-                <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            placeholder="Enter your name"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter email address"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
+  return (
+    <AppLayout>
+      <div className="auth-wrapper">
+        <Card className="auth-card" padding="lg">
+          <div className="auth-header">
+            <h1 className="auth-title">Create an account</h1>
+            <p className="auth-subtitle">Get started with role-specific interview prep</p>
+          </div>
 
-                    <button type="submit" className="button primary-button" disabled={submitting}>
-                        {submitting ? "Registering..." : "Register"}
-                    </button>
-                </form>
+          {error && <Alert variant="danger">{error}</Alert>}
 
-                <p>Already have an account? <Link to={"/login"}>Login</Link></p>
-            </div>
-        </main>
-    );
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <Input
+              id="username"
+              name="username"
+              type="text"
+              label="Full name"
+              placeholder="Alex Johnson"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={submitting}
+              autoComplete="name"
+              required
+            />
+
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={submitting}
+              autoComplete="email"
+              required
+            />
+
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              placeholder="Create a strong password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={submitting}
+              autoComplete="new-password"
+              required
+            />
+
+            <Button
+              type="submit"
+              variant="primary"
+              fullWidth
+              height44
+              loading={submitting || loading}
+              disabled={submitting || loading}
+            >
+              Create account
+            </Button>
+          </form>
+
+          <div className="auth-footer">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </div>
+        </Card>
+      </div>
+    </AppLayout>
+  );
 };
 
 export default Register;

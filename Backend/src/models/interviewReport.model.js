@@ -98,6 +98,21 @@ const presentationPlanSchema = new mongoose.Schema({
     _id: false
 });
 
+const analysisSkillSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    level: { type: Number, required: true, min: 0, max: 100 },
+    status: { type: String, enum: ['strong', 'partial', 'missing'], required: true }
+}, { _id: false });
+
+const analysisSchema = new mongoose.Schema({
+    matchScore: { type: Number, min: 0, max: 100 },
+    summary: { type: String, default: "" },
+    skills: [analysisSkillSchema],
+    strengths: [{ type: String }],
+    gaps: [{ type: String }],
+    focusAreas: [{ type: String }]
+}, { _id: false });
+
 const interviewReportSchema = new mongoose.Schema({
     jobDescription: {
         type: String,
@@ -118,6 +133,11 @@ const interviewReportSchema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 100
+    },
+
+    analysis: {
+        type: analysisSchema,
+        default: null
     },
 
     technicalQuestions: [technicalQuestionSchema],

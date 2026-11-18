@@ -1,21 +1,32 @@
-import {useAuth} from '../hooks/useAuth';
-import {Navigate} from 'react-router-dom';
+import React from "react";
+import { useAuth } from "../hooks/useAuth";
+import { Navigate } from "react-router-dom";
+import Spinner from "../../../components/ui/Spinner";
 
+const Protected = ({ children }) => {
+  const { loading, user } = useAuth();
 
-const Protected = ({children}) => {
-    const {loading, user} = useAuth();
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          backgroundColor: "var(--bg)",
+        }}
+      >
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
-    if(loading) {
-        return (
-            (<main><h1>Loading...</h1></main>)
-        )
-    }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if(!user) {
-        return <Navigate to="/login" />;
-    }
-
-    return children;
-    
+  return children;
 };
+
 export default Protected;

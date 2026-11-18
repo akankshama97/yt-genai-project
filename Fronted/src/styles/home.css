@@ -1,0 +1,155 @@
+/* ==========================================================================
+   Input / Home Page CSS
+   Strictly references design tokens; no hardcoded hex/rgb colors.
+   ========================================================================== */
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr; /* 40 / 60 ratio on desktop */
+  gap: 48px;
+  align-items: start;
+}
+
+/* ── Left Column ────────────────────────────────────────────────────────── */
+.home-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-intro__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-intro__label {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+
+.home-intro__title {
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.home-intro__subtext {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Sample Card */
+.sample-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sample-card__kicker {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.sample-card__quote {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.sample-card__hint {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.sample-card__hint-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sample-card__hint-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* How It Works */
+.how-it-works {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.how-it-works__title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.how-it-works__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.how-it-works__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.how-it-works__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-muted);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.how-it-works__text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* ── Right Column: Form ─────────────────────────────────────────────────── */
+.home-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Mobile Layout ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .home-intro__title {
+    font-size: 28px;
+  }
+}

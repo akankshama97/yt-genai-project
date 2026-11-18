@@ -1,6 +1,7 @@
 const {
     generateInterviewReport,
     generateResumePdf,
+    evaluateAnswer,
 } = require("../services/ai.service");
 
 const InterviewReport = require("../models/interviewReport.model");
@@ -213,9 +214,39 @@ async function generateResumePdfController(
     }
 }
 
+async function evaluateAnswerController(req, res) {
+    try {
+        const { question, answer, intention, modelAnswer, role } = req.body;
+        if (!question || !answer) {
+            return res.status(400).json({
+                message: "Question and answer are required.",
+            });
+        }
+
+        const feedback = await evaluateAnswer({
+            question,
+            answer,
+            intention,
+            modelAnswer,
+            role,
+        });
+
+        return res.status(200).json({
+            message: "Answer evaluated successfully.",
+            feedback,
+        });
+    } catch (error) {
+        console.error("EVALUATE ANSWER ERROR:", error);
+        return res.status(500).json({
+            message: "Unable to evaluate answer.",
+        });
+    }
+}
+
 module.exports = {
     generateInterViewReportController,
     getInterviewReportByIdController,
     getAllInterviewReportsController,
     generateResumePdfController,
+    evaluateAnswerController,
 };

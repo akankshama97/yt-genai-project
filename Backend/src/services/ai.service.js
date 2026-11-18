@@ -25,11 +25,34 @@ const ai = GOOGLE_API_KEY
     })
     : null;
 
+const skillAnalysisSchema = z.object({
+    name: z.string(),
+    level: z.number().min(0).max(100),
+    status: z.enum(["strong", "partial", "missing"]),
+});
+
+const analysisSchema = z.object({
+    matchScore: z.number().min(0).max(100),
+    summary: z.string(),
+    skills: z.array(skillAnalysisSchema),
+    strengths: z.array(z.string()),
+    gaps: z.array(z.string()),
+    focusAreas: z.array(z.string()),
+});
+
+const answerFeedbackSchema = z.object({
+    score: z.number().min(1).max(10),
+    whatWasGood: z.string(),
+    whatToImprove: z.string(),
+});
+
 const interviewReportSchema = z.object({
     matchScore: z
         .number()
         .min(0)
         .max(100),
+
+    analysis: analysisSchema.optional(),
 
     technicalQuestions: z.array(
         z.object({
@@ -636,8 +659,60 @@ function createFallbackInterviewReport({
             missingSkills
         );
 
+    const matchedSkills = skills.filter((s) => !missingSkills.includes(s));
+    const skillItems = [
+        ...matchedSkills.map((s) => ({
+            name: s,
+            level: Math.floor(Math.random() * 15) + 80,
+            status: "strong",
+        })),
+        ...missingSkills.slice(0, 5).map((s, idx) => ({
+            name: s,
+            level: idx === 0 ? 55 : 35,
+            status: idx === 0 ? "partial" : "missing",
+        })),
+    ];
+
+    if (!skillItems.length) {
+        skillItems.push(
+            { name: "Core Fundamentals", level: 85, status: "strong" },
+            { name: "Problem Solving", level: 80, status: "strong" },
+            { name: "Role Specifics", level: 50, status: "partial" }
+        );
+    }
+
+    const strengths = matchedSkills.length
+        ? matchedSkills.slice(0, 3).map((s) => `Solid background in ${s} and related workflow practices.`)
+        : [
+            "Demonstrated hands-on programming experience and problem-solving initiative.",
+            "Relevant foundation aligned with role expectations.",
+        ];
+
+    const gaps = missingSkills.length
+        ? missingSkills.slice(0, 3).map((s) => `Limited direct exposure to ${s} requested in the job description.`)
+        : [
+            "Production-scale system design tradeoffs.",
+            "Advanced performance tuning under high concurrency.",
+        ];
+
+    const focusAreas = [
+        `Review key concepts for ${role} interviews.`,
+        missingSkills.length ? `Prepare talking points addressing ${missingSkills[0]}.` : "Refine STAR behavioral storytelling.",
+        "Practice communicating architectural decisions and trade-offs.",
+    ];
+
+    const analysis = {
+        matchScore,
+        summary: `Candidate profile matches approximately ${matchScore}% of the key requirements for the ${role} position.`,
+        skills: skillItems,
+        strengths,
+        gaps,
+        focusAreas,
+    };
+
     return {
         matchScore,
+        analysis,
         technicalQuestions,
         behavioralQuestions,
         skillGaps,
@@ -678,7 +753,7 @@ async function generateInterviewReport({
     }
 
     const prompt = `
-Generate a detailed interview preparation report.
+Generate a comprehensive interview preparation report and real evaluation analysis.
 
 Candidate Resume:
 ${cleanResume || "No resume was provided."}
@@ -689,7 +764,20 @@ ${cleanSelfDescription}
 Job Description:
 ${cleanJobDescription}
 
-Return only the structured JSON response.
+Return ONLY valid JSON matching this schema:
+- matchScore: realistic number (0-100) evaluating candidate qualifications against requirements
+- analysis:
+  - matchScore: number (0-100)
+  - summary: concise role-specific assessment summary
+  - skills: array of { name: string, level: number (0-100), status: "strong" | "partial" | "missing" } evaluating skills required in the job against what candidate demonstrated
+  - strengths: list of real demonstrated candidate strengths
+  - gaps: list of real missing or underdeveloped qualifications
+  - focusAreas: actionable preparation focus areas
+- technicalQuestions: role-specific technical questions with intentions and model answers
+- behavioralQuestions: role-specific behavioral questions with intentions and model answers
+- skillGaps: array of { skill, severity }
+- preparationPlan: 7-day preparation plan
+- title: inferred job title
 `;
 
     try {
@@ -721,13 +809,19 @@ Return only the structured JSON response.
             );
         }
 
-        const parsed =
-            JSON.parse(rawText);
+        const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(cleanJson);
+        const validated = interviewReportSchema.parse(parsed);
 
-        const validated =
-            interviewReportSchema.parse(
-                parsed
-            );
+        // Ensure analysis exists
+        if (!validated.analysis) {
+            const fallback = createFallbackInterviewReport({
+                resume: cleanResume,
+                selfDescription: cleanSelfDescription,
+                jobDescription: cleanJobDescription,
+            });
+            validated.analysis = fallback.analysis;
+        }
 
         return validated;
     } catch (error) {
@@ -1120,7 +1214,99 @@ The HTML must be complete and suitable for printing to A4 PDF.
     );
 }
 
+function createFallbackAnswerFeedback({ question, answer, intention, modelAnswer }) {
+    const words = cleanText(answer).split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+
+    let score = 5;
+    if (wordCount >= 60) score += 3;
+    else if (wordCount >= 30) score += 2;
+    else if (wordCount >= 15) score += 1;
+
+    const lower = answer.toLowerCase();
+    if (lower.includes("because") || lower.includes("for example") || lower.includes("in my experience") || lower.includes("result") || lower.includes("trade-off")) {
+        score += 1;
+    }
+
+    score = Math.min(10, Math.max(2, score));
+
+    const whatWasGood = wordCount >= 30
+        ? "Clear structure that directly addresses the core question and conveys relevant technical rationale."
+        : "Direct and straightforward answer that identifies the main concept.";
+
+    const whatToImprove = wordCount < 40
+        ? "Expand on specific real-world examples, concrete trade-offs, and measurable outcomes to demonstrate deeper seniority."
+        : "Consider addressing potential edge cases and how you would monitor or verify performance in production.";
+
+    return {
+        score,
+        whatWasGood,
+        whatToImprove,
+    };
+}
+
+async function evaluateAnswer({ question, answer, intention, modelAnswer, role }) {
+    const cleanAns = cleanText(answer);
+    if (!cleanAns || cleanAns.length < 5) {
+        return {
+            score: 2,
+            whatWasGood: "You provided an initial thought.",
+            whatToImprove: "The response is too brief. Structure your answer with the problem context, technical choices, and final outcome.",
+        };
+    }
+
+    if (!ai || !GOOGLE_API_KEY) {
+        return createFallbackAnswerFeedback({ question, answer: cleanAns, intention, modelAnswer });
+    }
+
+    const prompt = `
+You are an expert technical interviewer evaluating a candidate's answer for a ${role || "Software Engineer"} position.
+
+Question:
+"${question}"
+
+Intention:
+"${intention || "Evaluate practical depth and problem-solving reasoning"}"
+
+Benchmark Answer:
+"${modelAnswer || "N/A"}"
+
+Candidate's Answer:
+"${cleanAns}"
+
+Evaluate this answer fairly and objectively.
+Return ONLY valid JSON with this exact schema:
+{
+  "score": number between 1 and 10 (integer),
+  "whatWasGood": "1-2 concise sentences highlighting the strongest accurate points",
+  "whatToImprove": "1-2 concise sentences with constructive suggestions for missing details or better structure"
+}
+`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: GEMINI_MODEL,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: zodToJsonSchema(answerFeedbackSchema),
+            },
+        });
+
+        const rawText = typeof response?.text === "function" ? response.text() : response?.text;
+        if (!rawText) throw new Error("Empty evaluation response.");
+
+        const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(cleanJson);
+        return answerFeedbackSchema.parse(parsed);
+    } catch (err) {
+        console.warn("AI evaluateAnswer failed, using fallback:", err?.message);
+        return createFallbackAnswerFeedback({ question, answer: cleanAns, intention, modelAnswer });
+    }
+}
+
 module.exports = {
     generateInterviewReport,
     generateResumePdf,
+    evaluateAnswer,
 };
