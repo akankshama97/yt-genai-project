@@ -1,11 +1,14 @@
-import React from "react";
 import Navbar from "./Navbar";
 
-const AppLayout = ({ children }) => {
+const AppLayout = ({ children, fullBleed = false, fluidNavbar = false, className = "" }) => {
   return (
-    <div className="app-shell">
-      <Navbar />
-      <main className="page-container">{children}</main>
+    <div className={`app-shell ${className}`}>
+      <Navbar fluid={fluidNavbar} />
+      {fullBleed ? (
+        <main className="page-container--full-bleed">{children}</main>
+      ) : (
+        <main className="page-container">{children}</main>
+      )}
     </div>
   );
 };

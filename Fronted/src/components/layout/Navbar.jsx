@@ -1,9 +1,8 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../features/auth/hooks/useAuth";
 import Button from "../ui/Button";
 
-const Navbar = () => {
+const Navbar = ({ fluid = false }) => {
   const { user, handleLogout } = useAuth();
   const navigate = useNavigate();
 
@@ -18,7 +17,7 @@ const Navbar = () => {
 
   return (
     <header className="navbar" role="banner">
-      <div className="navbar__container">
+      <div className={`navbar__container ${fluid ? "navbar__container--fluid" : ""}`}>
         <Link to="/" className="navbar__brand" aria-label="InterviewPrep Home">
           <span className="navbar__brand-dot" aria-hidden="true" />
           <span>InterviewPrep</span>
