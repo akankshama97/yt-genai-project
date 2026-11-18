@@ -1,13 +1,17 @@
 // ── Interview Prep Home Page (Hand-Designed Editorial Style) ──────────────────
 
 :root {
-    --bg: #FAF7F2;
+    --bg: #FCFBF8;
     --surface: #FFFFFF;
-    --border: #E8E2D6;
-    --text: #1F1B16;
-    --muted: #6F685C;
-    --accent: #C2410C;
-    --accent-hover: #9A3412;
+    --border: #E4DCCB;
+    --border-input: #D9D0BE;
+    --border-dashed: #CFC4AE;
+    --tint-left: #F3EBDD;
+    --text: #1A1714;
+    --muted: #6B6459;
+    --accent: #D9480F;
+    --accent-hover: #B83A0B;
+    --error: #B42318;
     --success: #14532D;
 }
 
@@ -16,13 +20,20 @@
     min-height: 100vh;
     background-color: var(--bg);
     color: var(--text);
-    padding: 48px 24px 80px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 48px 24px;
+
+    // Desktop split: Left half solid #F3EBDD, right half warm white #FCFBF8
+    @media (min-width: 901px) {
+        background: linear-gradient(to right, #F3EBDD 50%, #FCFBF8 50%);
+    }
 }
 
 .prep-container {
     width: 100%;
-    max-width: 1120px;
+    max-width: 1140px;
     margin: 0 auto;
 }
 
@@ -30,15 +41,16 @@
 .prep-grid {
     display: grid;
     grid-template-columns: 1fr 1.15fr;
-    gap: 56px;
-    align-items: start;
+    gap: 64px;
+    align-items: center; // Vertically center left content with form
 }
 
-// ── Left Column: Intro & Sample Card ─────────────────────────────────────────
+// ── Left Column: Intro, Sample Card & How It Works ───────────────────────────
 .prep-sidebar {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding-right: 16px;
 }
 
 .prep-label {
@@ -52,9 +64,9 @@
 
 .prep-heading {
     font-family: "Fraunces", Georgia, serif;
-    font-size: 40px;
+    font-size: 38px;
     font-weight: 500;
-    line-height: 1.15;
+    line-height: 1.18;
     letter-spacing: -0.02em;
     color: var(--text);
     margin: 0;
@@ -68,7 +80,7 @@
 }
 
 .prep-intro {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.6;
     color: var(--muted);
     margin: 0;
@@ -80,11 +92,10 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 24px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-top: 8px;
 }
 
 .sample-kicker {
@@ -124,7 +135,59 @@
     margin: 0;
 }
 
-// ── Right Column: The Form ───────────────────────────────────────────────────
+// ── How It Works (Numbered List in Muted Text) ───────────────────────────────
+.how-it-works {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.how-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+}
+
+.how-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.how-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.how-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.how-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+// ── Right Column: The Form Card ──────────────────────────────────────────────
 .prep-form-wrapper {
     width: 100%;
 }
@@ -134,17 +197,17 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 32px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
 }
 
 // ── Form Step ────────────────────────────────────────────────────────────────
 .form-step {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .step-header {
@@ -169,17 +232,18 @@
 
 .form-step textarea {
     width: 100%;
+    min-height: 140px;
     box-sizing: border-box;
     padding: 12px 16px;
-    background-color: var(--surface);
-    border: 1px solid var(--border);
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-input);
     border-radius: 8px;
     color: var(--text);
     font-size: 14px;
     line-height: 1.6;
     resize: vertical;
     outline: none;
-    transition: all 150ms ease;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
 
     &::placeholder {
         color: var(--muted);
@@ -188,11 +252,19 @@
 
     &:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.15);
+        box-shadow: 0 0 0 2px rgba(217, 72, 15, 0.25);
+    }
+
+    &.has-error {
+        border-color: var(--error);
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba(180, 35, 24, 0.2);
+        }
     }
 
     &:disabled {
-        background-color: var(--bg);
+        background-color: #F8F6F1;
         cursor: not-allowed;
     }
 }
@@ -200,8 +272,24 @@
 .step-helper {
     font-size: 13px;
     color: var(--muted);
-    margin: 0;
+    margin: 2px 0 0;
     line-height: 1.4;
+}
+
+// ── Validation Error Text Under Fields ───────────────────────────────────────
+.field-error-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--error);
+    margin: 2px 0 0;
+    line-height: 1.4;
+}
+
+.general-error {
+    padding: 10px 14px;
+    background-color: #FFF5F5;
+    border: 1px solid #FED7D7;
+    border-radius: 8px;
 }
 
 // ── Resume Upload Box ────────────────────────────────────────────────────────
@@ -212,16 +300,16 @@
     justify-content: center;
     gap: 4px;
     padding: 24px 16px;
-    background-color: var(--surface);
-    border: 1px dashed var(--border);
+    background-color: #FBF8F2;
+    border: 1px dashed var(--border-dashed);
     border-radius: 8px;
     cursor: pointer;
     text-align: center;
-    transition: all 150ms ease;
+    transition: border-color 150ms ease, background-color 150ms ease;
 
     &:hover {
         border-color: var(--accent);
-        background-color: var(--bg);
+        background-color: #F7F3EA;
     }
 }
 
@@ -243,7 +331,7 @@
     justify-content: space-between;
     gap: 16px;
     padding: 12px 16px;
-    background-color: var(--bg);
+    background-color: #FBF8F2;
     border: 1px solid var(--border);
     border-radius: 8px;
 }
@@ -291,17 +379,6 @@
     }
 }
 
-// ── Error Message Box ────────────────────────────────────────────────────────
-.form-error-box {
-    background-color: #FEF2F2;
-    border: 1px solid #FCA5A5;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: #991B1B;
-}
-
 // ── Primary Button ───────────────────────────────────────────────────────────
 .primary-submit-btn {
     width: 100%;
@@ -330,10 +407,259 @@
     }
 }
 
+.secondary-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: color 150ms ease;
+
+    &:hover {
+        color: var(--text);
+        text-decoration: underline;
+    }
+}
+
+// ── Post-Submit Real Live Analysis Card ──────────────────────────────────────
+.analysis-card {
+    gap: 24px;
+}
+
+.analysis-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+}
+
+.analysis-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+}
+
+.analysis-title {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 0;
+}
+
+.analysis-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+// ── Real Score Block ─────────────────────────────────────────────────────────
+.analysis-score-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 20px;
+    background-color: #FBF8F2;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding-right: 20px;
+    border-right: 1px solid var(--border);
+}
+
+.score-number-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.score-number {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent);
+}
+
+.score-percent {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.score-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.score-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.score-heading {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+
+.score-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+// ── Analysis Sections (Skill Gaps & Focus Areas) ─────────────────────────────
+.analysis-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.analysis-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.skill-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-gap-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid var(--border);
+    background-color: #FFFFFF;
+
+    .gap-name {
+        font-weight: 500;
+        color: var(--text);
+    }
+
+    .gap-severity {
+        font-size: 11px;
+        text-transform: capitalize;
+        color: var(--muted);
+    }
+
+    &.severity-high {
+        border-color: #F87171;
+        background-color: #FEF2F2;
+        .gap-severity {
+            color: var(--error);
+            font-weight: 600;
+        }
+    }
+
+    &.severity-medium {
+        border-color: #FCD34D;
+        background-color: #FFFBEB;
+        .gap-severity {
+            color: #B45309;
+            font-weight: 600;
+        }
+    }
+
+    &.severity-low {
+        border-color: #A7F3D0;
+        background-color: #ECFDF5;
+        .gap-severity {
+            color: var(--success);
+            font-weight: 600;
+        }
+    }
+}
+
+.focus-areas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.focus-area-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: #FFFFFF;
+}
+
+.focus-day {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--tint-left);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.focus-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.focus-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.focus-task {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+.analysis-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
 // ── Responsive Layout: Mobile (Single Column, Form First) ────────────────────
 @media (max-width: 900px) {
     .prep-page {
         padding: 24px 16px 48px;
+        background: var(--bg);
     }
 
     .prep-grid {
@@ -349,14 +675,30 @@
 
     .prep-sidebar {
         order: 2;
+        padding-right: 0;
     }
 
     .prep-form {
         padding: 24px 16px;
-        gap: 24px;
+        gap: 20px;
     }
 
     .prep-heading {
-        font-size: 32px;
+        font-size: 30px;
+    }
+
+    .analysis-score-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .score-block {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: 12px;
+        width: 100%;
+        align-items: flex-start;
     }
 }
