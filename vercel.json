@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://yt-genai-project.onrender.com/api/$1"
+      "destination": "/api"
     },
     {
       "source": "/(.*)",
