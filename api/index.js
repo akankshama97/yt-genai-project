@@ -1,7 +1,9 @@
 const path = require("path");
 module.paths.push(path.resolve(__dirname, "../Backend/node_modules"));
+module.paths.push(path.resolve(__dirname, "../node_modules"));
 
 require("dotenv").config({ path: path.resolve(__dirname, "../Backend/.env") });
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const app = require("../Backend/src/app");
 const connectToDB = require("../Backend/src/config/database");
 

@@ -10,6 +10,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,11 +19,14 @@ const Login = () => {
             setError("Please enter both email and password.");
             return;
         }
+        setSubmitting(true);
         try {
             await handleLogin({ email, password });
             navigate('/');
         } catch (err) {
             setError(err?.response?.data?.message || err?.message || "Invalid email or password.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -62,8 +66,8 @@ const Login = () => {
                             placeholder="Enter your password"
                         />
                     </div>
-                    <button type="submit" className="button primary-button">
-                        Login
+                    <button type="submit" className="button primary-button" disabled={submitting}>
+                        {submitting ? "Logging in..." : "Login"}
                     </button>
                 </form>
 

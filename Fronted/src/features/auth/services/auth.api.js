@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const getBaseUrl = () => {
-    if (import.meta.env.VITE_API_URL) {
-        return import.meta.env.VITE_API_URL;
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (envUrl && envUrl.trim()) {
+        return envUrl.trim().replace(/\/$/, "");
     }
     if (import.meta.env.DEV) {
         return "http://localhost:3000";

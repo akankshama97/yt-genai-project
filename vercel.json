@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd Fronted && npm install && npm run build",
+  "buildCommand": "npm install && cd Fronted && npm install && npm run build",
   "outputDirectory": "Fronted/dist",
   "functions": {
     "api/index.js": {

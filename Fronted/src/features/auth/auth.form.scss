@@ -4,26 +4,38 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #0f172a;
-    color: white;
-    padding: 20px;
+    background:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+        #f8fafc;
+    color: #0f172a;
+    padding: 24px;
 }
 
-/* Form ka box */
+/* Form Container */
 .form-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 440px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    background: #1e293b;
-    padding: 30px;
-    border: 1px solid #334155;
-    border-radius: 18px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    gap: 20px;
+    background: #ffffff;
+    padding: 36px 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.07), 0 0 1px 1px rgba(15, 23, 42, 0.02);
 }
 
-/* Input ke andar ka group */
+.form-container h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    text-align: center;
+}
+
+/* Input group */
 .input-group {
     display: flex;
     flex-direction: column;
@@ -32,96 +44,111 @@ main {
 
 /* Label */
 .input-group label {
-    color: #e2e8f0;
-    font-size: 15px;
+    color: #334155;
+    font-size: 14px;
     font-weight: 600;
 }
 
 /* Input box */
 input {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #475569;
-    border-radius: 10px;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
     outline: none;
-    background: #0f172a;
-    color: white;
+    background: #ffffff;
+    color: #0f172a;
     font-size: 15px;
+    transition: all 0.2s ease;
 }
 
-/* Input par click karne par */
+/* Input focus */
 input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
 /* Input placeholder */
 input::placeholder {
-    color: #64748b;
+    color: #94a3b8;
+}
+
+/* Error message */
+.error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626 !important;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin: 0 !important;
 }
 
 /* Button */
 .form-container .button {
     width: 100%;
-    padding: 12px;
+    padding: 13px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     outline: none;
     cursor: pointer;
-    color: white;
-    font-size: 16px;
+    color: #ffffff;
+    font-size: 15px;
     font-weight: 600;
-    background: linear-gradient(90deg,
-            #3b82f6,
-            #6366f1);
-    transition: 0.3s;
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.3);
+    transition: all 0.25s ease;
+    margin-top: 6px;
 }
 
-/* Button hover */
-.form-container .button:hover {
+.form-container .button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 25px -4px rgba(79, 70, 229, 0.45);
 }
 
-/* Button click */
-.form-container .button:active {
-    transform: scale(0.97);
+.form-container .button:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.form-container .button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 /* Primary button */
 .form-container .primary-button {
-    background: linear-gradient(90deg,
-            #3b82f6,
-            #8b5cf6);
-
-    color: white;
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    color: #ffffff;
 }
 
+/* Footer text */
+.form-container p {
+    margin: 0;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+}
 
 /* Link */
 a {
-    color: #60a5fa;
-
+    color: #4f46e5;
     text-decoration: none;
-
-    font-weight: 500;
+    font-weight: 600;
+    transition: color 0.15s ease;
 }
 
-
-/* Link hover */
 a:hover {
-    color: #a78bfa;
-
+    color: #3730a3;
     text-decoration: underline;
 }
 
 /* Mobile */
 @media (max-width: 600px) {
     main {
-        padding: 15px;
+        padding: 16px;
     }
     .form-container {
-        padding: 20px;
+        padding: 24px 20px;
+        border-radius: 16px;
     }
-
 }

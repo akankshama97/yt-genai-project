@@ -11,6 +11,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,11 +20,14 @@ const Register = () => {
             setError("Please fill in all fields.");
             return;
         }
+        setSubmitting(true);
         try {
             await handleRegister({ username, email, password });
             navigate('/');
         } catch (err) {
             setError(err?.response?.data?.message || err?.message || "Failed to register. Please try again.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -76,7 +80,9 @@ const Register = () => {
                         />
                     </div>
 
-                    <button type="submit" className="button primary-button">Register</button>
+                    <button type="submit" className="button primary-button" disabled={submitting}>
+                        {submitting ? "Registering..." : "Register"}
+                    </button>
                 </form>
 
                 <p>Already have an account? <Link to={"/login"}>Login</Link></p>
