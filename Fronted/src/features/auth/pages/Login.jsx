@@ -32,11 +32,16 @@ const Login = () => {
       await handleLogin({ email, password });
       navigate("/");
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Invalid email or password."
-      );
+      const serverMsg = err?.response?.data?.message;
+      if (serverMsg) {
+        setError(serverMsg);
+      } else if (err?.response?.status === 500) {
+        setError("Server is temporarily busy. Please try again.");
+      } else if (err?.message === "Network Error" || !err?.response) {
+        setError("Unable to connect to server. Please check your internet connection.");
+      } else {
+        setError(err?.message || "Invalid email or password.");
+      }
     } finally {
       setSubmitting(false);
     }

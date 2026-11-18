@@ -35,13 +35,16 @@ export async function login({ email, password }) {
 
 export async function logout() {
   try {
-    const response = await api.post("/api/auth/logout");
     localStorage.removeItem("token");
-    return response.data;
+    const response = await api.post("/api/auth/logout").catch((err) => {
+      console.warn("Server logout notification skipped/failed:", err?.message);
+      return { data: { message: "Logged out locally" } };
+    });
+    return response.data || { message: "Logged out successfully" };
   } catch (err) {
     localStorage.removeItem("token");
     console.error("Logout Error:", err);
-    throw err;
+    return { message: "Logged out locally" };
   }
 }
 
@@ -53,7 +56,6 @@ export async function getMe() {
     if (err?.response?.status === 401) {
       localStorage.removeItem("token");
     }
-    console.error("GetMe Error:", err);
     throw err;
   }
 }

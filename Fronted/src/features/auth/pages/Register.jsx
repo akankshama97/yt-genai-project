@@ -32,11 +32,16 @@ const Register = () => {
       await handleRegister({ username, email, password });
       navigate("/");
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Failed to register. Please try again."
-      );
+      const serverMsg = err?.response?.data?.message;
+      if (serverMsg) {
+        setError(serverMsg);
+      } else if (err?.response?.status === 500) {
+        setError("Server is temporarily busy. Please try again.");
+      } else if (err?.message === "Network Error" || !err?.response) {
+        setError("Unable to connect to server. Please check your internet connection.");
+      } else {
+        setError(err?.message || "Failed to register. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }

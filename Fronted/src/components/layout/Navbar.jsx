@@ -9,9 +9,10 @@ const Navbar = ({ fluid = false }) => {
   const onLogout = async () => {
     try {
       await handleLogout();
-      navigate("/login");
     } catch (err) {
-      console.error(err);
+      console.warn("Logout notice:", err);
+    } finally {
+      navigate("/login");
     }
   };
 
