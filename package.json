@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "AI Interview Coach",
   "scripts": {
-    "dev": "npm run dev --prefix Fronted",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue.bold,green.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue.bold,green.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev --prefix Fronted",
     "dev:backend": "npm run dev --prefix Backend",
     "start:backend": "node Backend/server.js",
@@ -12,6 +13,7 @@
   "dependencies": {
     "@google/genai": "^1.42.0",
     "bcryptjs": "^3.0.3",
+    "concurrently": "^10.0.7",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",

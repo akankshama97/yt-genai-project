@@ -8,7 +8,7 @@ const getBaseUrl = () => {
     if (import.meta.env.DEV) {
         return "http://localhost:3000";
     }
-    return "";
+    return "https://yt-genai-project.onrender.com";
 };
 
 const api = axios.create({
