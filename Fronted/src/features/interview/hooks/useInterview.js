@@ -160,54 +160,48 @@ const generateReport = useCallback(
 
     const downloadResume = useCallback(
         async (interviewReportId) => {
-            setLoading(true);
-            setError(null);
-
             try {
+                const responseData = await generateResumePdf({
+                    interviewReportId,
+                });
+
+                // Ensure data is treated as Blob
                 const blob =
-                    await generateResumePdf({
-                        interviewReportId,
-                    });
+                    responseData instanceof Blob
+                        ? responseData
+                        : new Blob([responseData], { type: "application/pdf" });
 
-                const url =
-                    window.URL.createObjectURL(
-                        blob
-                    );
-
-                const link =
-                    document.createElement("a");
-
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement("a");
                 link.href = url;
-
-                link.download =
-                    `resume-${interviewReportId}.pdf`;
-
+                link.download = `resume-${interviewReportId}.pdf`;
                 document.body.appendChild(link);
-
                 link.click();
-
                 link.remove();
-
                 window.URL.revokeObjectURL(url);
+                return true;
             } catch (error) {
-                console.error(
-                    "Download resume error:",
-                    error
-                );
+                console.error("Download resume error:", error);
 
-                const message =
-                    error?.response?.data?.message ||
-                    error?.message ||
-                    "Failed to download resume.";
+                let message = "Failed to download resume.";
+                if (error?.response?.data instanceof Blob) {
+                    try {
+                        const raw = await error.response.data.text();
+                        const parsed = JSON.parse(raw);
+                        if (parsed?.message) message = parsed.message;
+                    } catch {
+                        // ignore JSON parse error on blob
+                    }
+                } else if (error?.response?.data?.message) {
+                    message = error.response.data.message;
+                } else if (error?.message) {
+                    message = error.message;
+                }
 
-                setError(message);
-
-                throw error;
-            } finally {
-                setLoading(false);
+                throw new Error(message);
             }
         },
-        [setError, setLoading]
+        []
     );
 
     return {

@@ -34,6 +34,9 @@ export const generateResumePdf = async ({ interviewReportId }) => {
     null,
     {
       responseType: "blob",
+      headers: {
+        Accept: "application/pdf, application/json, */*",
+      },
     }
   );
   return response.data;

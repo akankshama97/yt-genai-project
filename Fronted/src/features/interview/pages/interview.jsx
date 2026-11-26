@@ -267,6 +267,8 @@ const Interview = () => {
 
   const [activeTab, setActiveTab] = useState("technical"); // technical | behavioral | results | roadmap
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState(null);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [evaluatedAnswers, setEvaluatedAnswers] = useState({});
 
   useEffect(() => {
@@ -277,10 +279,18 @@ const Interview = () => {
 
   const handleDownload = async () => {
     setDownloading(true);
+    setDownloadError(null);
+    setDownloadSuccess(false);
     try {
       await downloadResume(interviewId);
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 4000);
     } catch (err) {
       console.error(err);
+      setDownloadError(
+        err?.message || "Failed to download resume PDF. Please try again."
+      );
+      setTimeout(() => setDownloadError(null), 5000);
     } finally {
       setDownloading(false);
     }
@@ -362,13 +372,28 @@ const Interview = () => {
               loading={downloading}
               disabled={downloading}
             >
-              {downloading ? "Preparing PDF..." : "Download Resume PDF"}
+              {downloading
+                ? "Preparing PDF..."
+                : downloadSuccess
+                ? "Downloaded!"
+                : "Download Resume PDF"}
             </Button>
             <Link to="/">
               <Button variant="ghost">New interview</Button>
             </Link>
           </div>
         </header>
+
+        {downloadError && (
+          <div style={{ marginBottom: "1rem" }}>
+            <Alert variant="danger">{downloadError}</Alert>
+          </div>
+        )}
+        {downloadSuccess && (
+          <div style={{ marginBottom: "1rem" }}>
+            <Alert variant="success">Resume PDF downloaded successfully!</Alert>
+          </div>
+        )}
 
         {/* ── Real AI Analysis Card (Requirement 5) ── */}
         {parsedAnalysis ? (

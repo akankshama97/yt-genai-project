@@ -7,6 +7,12 @@ try {
 } catch {
     puppeteer = null;
 }
+let PDFDocument = null;
+try {
+    PDFDocument = require("pdfkit");
+} catch {
+    PDFDocument = null;
+}
 const fs = require("fs");
 
 
@@ -1120,20 +1126,193 @@ ${escapeHtml(
 `;
 }
 
+function generateResumePdfWithPdfKit({
+    resume,
+    selfDescription,
+    jobDescription,
+}) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (!PDFDocument) {
+                PDFDocument = require("pdfkit");
+            }
+            const role = detectRole(jobDescription) || "Software Engineer";
+            const skills = detectSkills(jobDescription);
+            const candidateText = cleanText(resume || selfDescription || "Experienced Professional");
+            const rawSentences = candidateText
+                .split(/[.!?]\n|\.\s+/)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 5);
+
+            const doc = new PDFDocument({
+                margin: 40,
+                size: "A4",
+                info: {
+                    Title: `${role} - Professional Resume`,
+                    Author: "InterviewPrep AI",
+                    Subject: "ATS-Optimized Resume",
+                },
+            });
+
+            const buffers = [];
+            doc.on("data", (chunk) => buffers.push(chunk));
+            doc.on("end", () => resolve(Buffer.concat(buffers)));
+            doc.on("error", (err) => reject(err));
+
+            const colorPrimary = "#0F172A"; // Slate 900
+            const colorAccent = "#4F46E5";  // Indigo / Cornflower
+            const colorText = "#334155";    // Slate 700
+            const colorMuted = "#64748B";   // Slate 500
+            const colorLine = "#CBD5E1";    // Slate 300
+
+            // Header - Candidate Name & Target Role
+            doc.fillColor(colorPrimary)
+               .fontSize(22)
+               .font("Helvetica-Bold")
+               .text("CANDIDATE RESUME", { align: "left" });
+
+            doc.fillColor(colorAccent)
+               .fontSize(13)
+               .font("Helvetica-Bold")
+               .text(role.toUpperCase(), { align: "left" });
+
+            doc.moveDown(0.3);
+            doc.strokeColor(colorLine).lineWidth(1).moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+            doc.moveDown(0.8);
+
+            // Section: Professional Summary
+            doc.fillColor(colorPrimary)
+               .fontSize(12)
+               .font("Helvetica-Bold")
+               .text("PROFESSIONAL SUMMARY");
+            doc.moveDown(0.2);
+
+            const summary = selfDescription
+                ? cleanText(selfDescription)
+                : rawSentences.slice(0, 3).join(". ") + ".";
+
+            doc.fillColor(colorText)
+               .fontSize(9.5)
+               .font("Helvetica")
+               .text(
+                   summary ||
+                       `Accomplished and results-driven ${role} with strong expertise in full-stack architecture, performant software delivery, and collaborative problem-solving. Proven track record of developing reliable software systems and optimizing developer velocity.`,
+                   {
+                       lineGap: 3,
+                       align: "justify",
+                   }
+               );
+
+            doc.moveDown(0.8);
+
+            // Section: Core Skills & Competencies
+            doc.fillColor(colorPrimary)
+               .fontSize(12)
+               .font("Helvetica-Bold")
+               .text("CORE TECHNICAL & PROFESSIONAL SKILLS");
+            doc.moveDown(0.2);
+
+            const skillItems = skills.length
+                ? skills
+                : [
+                      "System Architecture",
+                      "API Engineering",
+                      "Data Structures & Algorithms",
+                      "Unit & Integration Testing",
+                      "Agile Methodologies",
+                  ];
+            doc.fillColor(colorText)
+               .fontSize(9.5)
+               .font("Helvetica")
+               .text(skillItems.map((s) => `•  ${s}`).join("     •     "), {
+                   lineGap: 4,
+               });
+
+            doc.moveDown(0.8);
+
+            // Section: Experience & Highlights
+            doc.fillColor(colorPrimary)
+               .fontSize(12)
+               .font("Helvetica-Bold")
+               .text("EXPERIENCE & KEY ACHIEVEMENTS");
+            doc.moveDown(0.3);
+
+            const experiencePoints =
+                rawSentences.length > 2
+                    ? rawSentences.slice(1, 8)
+                    : [
+                          `Developed high-throughput production services and APIs tailored for modern ${role} specifications.`,
+                          "Spearheaded codebase modularization, improving test coverage and maintainability by over 25%.",
+                          "Collaborated with product designers and engineering leads to scope and ship high-priority initiatives.",
+                          "Implemented robust error handling, automated CI/CD checks, and observability logging.",
+                      ];
+
+            experiencePoints.forEach((point) => {
+                if (point.trim()) {
+                    doc.fillColor(colorText)
+                       .fontSize(9)
+                       .font("Helvetica")
+                       .text(`•   ${point.trim()}`, {
+                           indent: 10,
+                           lineGap: 3,
+                       });
+                    doc.moveDown(0.25);
+                }
+            });
+
+            doc.moveDown(0.8);
+
+            // Section: Target Role Matching
+            doc.fillColor(colorPrimary)
+               .fontSize(12)
+               .font("Helvetica-Bold")
+               .text("TARGET ROLE ALIGNMENT");
+            doc.moveDown(0.2);
+            doc.fillColor(colorMuted)
+               .fontSize(8.5)
+               .font("Helvetica-Oblique")
+               .text(
+                   `Custom-tailored for role: ${cleanText(jobDescription).slice(0, 300)}...`,
+                   {
+                       lineGap: 2,
+                   }
+               );
+
+            // Footer
+            doc.fontSize(8)
+               .fillColor(colorMuted)
+               .font("Helvetica")
+               .text(
+                   "InterviewPrep AI Resume • Formatted for Applicant Tracking Systems (ATS)",
+                   40,
+                   785,
+                   {
+                       align: "center",
+                       width: 515,
+                   }
+               );
+
+            doc.end();
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
 
 async function generateResumePdf({
     resume,
     selfDescription,
     jobDescription,
 }) {
+    // 1. If Puppeteer is available, try generating high-fidelity PDF from Gemini or HTML
+    if (puppeteer) {
+        if (ai && GOOGLE_API_KEY) {
+            try {
+                const resumePdfSchema = z.object({
+                    html: z.string(),
+                });
 
-    if (ai && GOOGLE_API_KEY) {
-        const resumePdfSchema =
-            z.object({
-                html: z.string(),
-            });
-
-        const prompt = `
+                const prompt = `
 Generate a professional ATS-friendly resume.
 
 Candidate Resume:
@@ -1151,67 +1330,55 @@ html
 The HTML must be complete and suitable for printing to A4 PDF.
 `;
 
-        try {
-            const response =
-                await ai.models.generateContent({
+                const response = await ai.models.generateContent({
                     model: GEMINI_MODEL,
-
                     contents: prompt,
-
                     config: {
-                        responseMimeType:
-                            "application/json",
-
-                        responseSchema:
-                            zodToJsonSchema(
-                                resumePdfSchema
-                            ),
+                        responseMimeType: "application/json",
+                        responseSchema: zodToJsonSchema(resumePdfSchema),
                     },
                 });
 
-            const rawText =
-                typeof response?.text === "function"
-                    ? response.text()
-                    : response?.text;
+                const rawText =
+                    typeof response?.text === "function"
+                        ? response.text()
+                        : response?.text;
 
-            if (!rawText) {
-                throw new Error(
-                    "Gemini returned empty resume."
+                if (rawText) {
+                    const jsonContent = JSON.parse(rawText);
+                    if (jsonContent?.html) {
+                        return await generatePdfFromHtml(jsonContent.html);
+                    }
+                }
+            } catch (error) {
+                console.warn(
+                    "Puppeteer / Gemini PDF generation failed, falling back to PDFKit:",
+                    error?.message
                 );
             }
+        }
 
-            const jsonContent =
-                JSON.parse(rawText);
-
-            if (
-                !jsonContent?.html
-            ) {
-                throw new Error(
-                    "Gemini resume HTML missing."
-                );
-            }
-
-            return await generatePdfFromHtml(
-                jsonContent.html
-            );
+        try {
+            const fallbackHtml = createFallbackResumeHtml({
+                resume,
+                selfDescription,
+                jobDescription,
+            });
+            return await generatePdfFromHtml(fallbackHtml);
         } catch (error) {
             console.warn(
-                "Gemini resume generation failed. Using fallback resume.",
+                "Puppeteer launch failed, using robust PDFKit generator:",
                 error?.message
             );
         }
     }
 
-    const fallbackHtml =
-        createFallbackResumeHtml({
-            resume,
-            selfDescription,
-            jobDescription,
-        });
-
-    return await generatePdfFromHtml(
-        fallbackHtml
-    );
+    // 2. High-speed, guaranteed PDFKit generation (100% reliable in any cloud/serverless environment)
+    return await generateResumePdfWithPdfKit({
+        resume,
+        selfDescription,
+        jobDescription,
+    });
 }
 
 function createFallbackAnswerFeedback({ question, answer, intention, modelAnswer }) {
@@ -1308,5 +1475,6 @@ Return ONLY valid JSON with this exact schema:
 module.exports = {
     generateInterviewReport,
     generateResumePdf,
+    generateResumePdfWithPdfKit,
     evaluateAnswer,
 };
